@@ -1,10 +1,25 @@
 
+var ROUND = 1;
 
 d3.selection.prototype.moveToFront = function() {
   return this.each(function(){
     this.parentNode.appendChild(this);
   });
 };
+
+function play() {
+    //increment; settimeout
+}
+
+function increment() {
+    // start with .round1 on
+    // all others off
+
+    d3.selectAll('.round'+ROUND).attr('class','faded');
+    ROUND++;
+    d3.selectAll('.round'+ROUND).attr('class','on');
+}
+
 
 //create your containing svg
 var svg = d3.select('body').append('svg');
@@ -14,7 +29,7 @@ var map = mapsense.map() // init the map
     .add(mapsense.interact()) //add interaction
     //.center({lon: -122.437, lat: 37.757}) // sf-ish
     .center({lon: -96.0, lat: 39.83}) // us48 39.828175,-98.5795
-    .zoom(4.2); //set a zoom
+    .zoom(4.5); //set a zoom
 
 
 url_query = "https://{S}-tiles.mapsense.co/mapsense.demographics/tile/{Z}/{X}/{Y}.topojson?where=layer=='state'";
@@ -30,8 +45,43 @@ map.add(layer); //add the topojson layer to your map
 
 
 geojson_url = "src/ncaa64.json";
+//var ncaa_layer = mapsense.topoJson() //init a topojson layer
+/*var ncaa_data = {};
+*/
 
+var TEMP;
 
+var ncaa_layer = mapsense.geoJson() //init a geojson layer
+    .url(geojson_url) //tell it where to look
+    //.features()
+    .selection( // sets/gets the selection function
+        function(d){
+            d.attr("class", "ncaa_pts") //use a d3 selection to class each feature 
+            //.style("fill", "none")
+            /*.style("stroke", "black")
+            .style("fill", "orange")
+            .style("fill-opacity", "0.3")
+            .attr("rank","foo")*/
+
+            TEMP=d;
+            /*console.log(d);
+            console.log(d.node());
+            console.log(d.node().getBBox().x);
+*/
+            /*var x = d.node().getBBox().x;
+            var y = d.node().getBBox().y;
+
+            var parent = d3.select(this.parentNode);
+            parent.append("text")
+                .text("foo")
+                    .attr("x", x)
+                    .attr("y", y)*/
+            
+        }
+    )
+
+    //.attr("id", "ncaa_pts")
+//map.add(ncaa_layer); //add the geojson layer to the map
 
 // instead of assigning the url via mapsense, we'll use a basic d3 object:
 var ncaa_pts, seeds_01;
@@ -65,12 +115,27 @@ d3.json(geojson_url, function(the_geojson) {
                 }
                 return seed;
             })
+
+
         });
 
     map.add(ncaa_layer);
 
+/*var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Frequency:</strong> <span style='color:red'>" + 'd' + "</span>";
+  })
 
-var ROUND = 1;
+  d3.selectAll('.shape_on').call(tip);*/
+
+  d3.selectAll('.shape_on')
+    .on('mouseover', function(d) {
+        //console.log(d.attr('class'));
+        console.log(d.properties.Seed, d.properties.Team);
+    })
+
     // Add labels. (To fix)
     // replace the shape-pt with a container containing the shape-pt and a text node
 /*    d3.selectAll('.shape_on').data(['testing'])
@@ -222,6 +287,9 @@ function setStateFromRound(round) {
         
         for (j = 0; j < 4; j++) {
             if ( favorites.features[j] && underdogs.features[j] ) {
+                //console.log(i, j);
+                //console.log(i, favorites.features[j].properties.Team);
+                //console.log(teams_in_region-i+1,  underdogs.features[j].properties.Team);
                 var gj_arc = twoCoords2geojsonArc( favorites.features[j].geometry.coordinates, underdogs.features[j].geometry.coordinates );
                 // temp hack
                 GJ_ARCS[i][j] = mapsense.geoJson() //init a geojson layer
@@ -229,6 +297,8 @@ function setStateFromRound(round) {
                     .selection( // sets/gets the selection function
                         function(d){
                             d.attr('class','path_on round-'+round)
+                            //.style("fill", "none")
+                            //.style("stroke", "black")
                         }
                     )        
                 map.add(GJ_ARCS[i][j]); 
@@ -242,30 +312,66 @@ function setStateFromRound(round) {
 
 function twoCoords2geojsonArc(coord_a, coord_b) { // [lon, lat], [lon, lat]
 // --- Add paths
-    // Format of object is an array of objects, each containing
+        // Format of object is an array of objects, each containing
 
-    var features = [];
-    var geojson = { 'type': 'FeatureCollection',
-                    'features': features
-                  };
-    
-    var start = {
-        x: coord_a[0],
-        y: coord_a[1]
-    };
-    var end = {
-        x: coord_b[0],
-        y: coord_b[1]
-    }
-    var generator = new arc.GreatCircle(start, end, {'name': ''});
-    var line = generator.Arc(100,{offset:10}); // lines w/in 10deg of dateline will be split
-    var gj_line = line.json();
-    features.push(line.json());
+        var features = [];
+        var geojson = { 'type': 'FeatureCollection',
+                        'features': features
+                      };
+        
+            var start = {
+                x: coord_a[0],
+                y: coord_a[1]
+            };
+            var end = {
+                x: coord_b[0],
+                y: coord_b[1]
+            }
+            var generator = new arc.GreatCircle(start, end, {'name': ''});
+            var line = generator.Arc(100,{offset:10}); // lines w/in 10deg of dateline will be split
+            var gj_line = line.json();
+            features.push(line.json());
+        
 
-
-    return geojson;
-    //console.log(JSON.stringify(geojson));
+        return geojson;
+        //console.log(JSON.stringify(geojson));
 }
+
+
+function connectTheDots(gj_data) {
+// --- Add paths
+        // Format of object is an array of objects, each containing
+
+
+        var features = [];
+        var geojson = { 'type': 'FeatureCollection',
+                        'features': features
+                      };
+        
+        var data = gj_data.features;
+        for(var i=0, len=data.length-1; i<len; i++){
+            // (note: loop until length - 1 since we're getting the next
+            //  item with i+1)
+            var start = {
+                x: data[i].geometry.coordinates[0],
+                y: data[i].geometry.coordinates[1]
+            };
+            var end = {
+                x: data[i+1].geometry.coordinates[0],
+                y: data[i+1].geometry.coordinates[1]
+            }
+            var generator = new arc.GreatCircle(start, end, {'name': 'arc_' + i});
+            var line = generator.Arc(100,{offset:10}); // lines w/in 10deg of dateline will be split
+            var gj_line = line.json();
+            features.push(line.json());
+        }
+
+        return geojson;
+        //console.log(JSON.stringify(geojson));
+        
+
+}
+
 
 var button_group = svg.append('g');
 for (var i = 1; i < 7; i++) {
@@ -314,4 +420,35 @@ for (var i = 1; i < 7; i++) {
                         .attr('style', 'pointer-events: none')
                         .append("xhtml:body")
     .html('<div class="button-text-wrap"><div class="button-text-inner">'+cont_text+'</div></div>')
+
+    //container.select('text').call(wrap, 30); // wrap the text in <= 30 pixels
  }; 
+
+/*
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1, // ems
+        //lineHeight = 1.1, // ems
+        //y = text.attr("y"),
+        y = 0,
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        var new_y = ++lineNumber * lineHeight + dy + "em";
+        console.log(word, new_y);
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", new_y).text(word);
+      }
+    }
+  });
+}*/

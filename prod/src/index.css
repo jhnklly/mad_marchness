@@ -121,8 +121,7 @@ table {
 .round-button {
     stroke: #333;
     stroke-width: 0;
-    /*fill: rgba(0,0,0,0.2);*/
-    fill: #ddd;
+    fill: rgba(0,0,0,0.2);
 }
 
 .round-button-hover {
@@ -138,11 +137,22 @@ foreignObject {
     width: 100px;
     height: 100px;
     padding: 1px;
+    /*    
+    border: 1px dotted green;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    */
 }
 
 .button-text-inner {
     width: 100px;
     text-align: center;
+    /*    
+    border: 1px dotted purple;
+    vertical-align: middle;
+    position: absolute;
+    */
     top: 50%;
     height: 100px;
     margin: 37px auto 0 auto;
