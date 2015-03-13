@@ -1,0 +1,159 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.states {
+    /*fill: #E8E9E3;*/
+    fill: #bbb;
+    stroke: white;
+}
+
+.path_on.round-6 {
+    stroke-width: 20;
+}
+
+.path_on.round-5 {
+    stroke-width: 10;
+}
+
+.path_on.round-4 {
+    stroke-width: 6;
+}
+
+.path_on.round-3 {
+    stroke-width: 4;
+}
+
+.path_on.round-2 {
+    stroke-width: 3;
+}
+
+.path_on {
+    stroke: orange;
+    fill: transparent;
+    stroke-width: 2;
+    stroke-opacity: 0.7;
+}
+
+.path_off {
+    stroke: transparent;
+    fill: transparent;
+}
+
+.path_fade {
+    stroke: #aaa;
+    fill: transparent;
+}
+
+
+.shape_on {
+    stroke: orange;
+    stroke-opacity: 0.75;
+    stroke-width: 10;
+    fill: orange;
+    fill-opacity: 0.8;
+    /*transform: scale(1.5);*/
+}
+
+.shape_off {
+    stroke: transparent;
+    fill: transparent;
+}
+
+.shape_fade {
+    stroke: #999;
+    stroke-opacity: 0.75;
+    stroke-width: 10;
+    fill: #999;
+    fill-opacity: 0.8;
+}
+
+.round-button {
+    stroke: #333;
+    stroke-width: 0;
+    fill: rgba(0,0,0,0.2);
+}
+
+.round-button-hover {
+    stroke: #333;
+    stroke-width: 0;
+    fill: orange;
+}
+
+foreignObject {
+    pointer-events: none;
+}
+.button-text-wrap {
+    width: 100px;
+    height: 100px;
+    padding: 1px;
+    /*    
+    border: 1px dotted green;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    */
+}
+
+.button-text-inner {
+    width: 100px;
+    text-align: center;
+    /*    
+    border: 1px dotted purple;
+    vertical-align: middle;
+    position: absolute;
+    */
+    top: 50%;
+    height: 100px;
+    margin: 37px auto 0 auto;
+}
